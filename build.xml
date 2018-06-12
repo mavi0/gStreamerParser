@@ -1,0 +1,40 @@
+<?xml version = "1.0"?>
+<project name="r3" default="run">
+
+  <path id="classpath-main">
+    <fileset dir="lib">
+      <include name = "*.jar"/>
+    </fileset>
+    <pathelement path = "build"/>
+  </path>
+
+  <target name="clean">
+    <delete dir="build"/>
+    <delete dir="out"/>
+  </target>
+
+  <target name="build" depends="clean">
+    <mkdir dir="build/gstreamerparser"/>
+    <javac destdir="build">
+      <src path="src/"/>
+      <classpath refid="classpath-main"/>
+    </javac>
+  </target>
+
+<!--
+  <target name="doc" depends="build">
+    <javadoc sourcepath -->
+
+  <target name="jar" depends="build">
+    <jar destfile="out/parser.jar" basedir="build" includes="gstreamerparser/*.class">
+      <zipgroupfileset dir="lib" includes="*.jar"/>
+      <manifest>
+        <attribute name="Main-Class" value="gstreamerparser/Driver"/>
+      </manifest>
+    </jar>
+  </target>
+
+  <target name="run" depends="jar">
+        <java jar="out/parser.jar" fork="true"/>
+    </target>
+</project>
