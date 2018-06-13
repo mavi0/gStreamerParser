@@ -38,6 +38,9 @@ public class Parser
       e.printStackTrace();
     }
 
+    // for (int i = 0; i < rawInput.size(); i++)
+    //   System.out.println(rawInput.get(i));
+
     // System.out.println(rawInput.get(1));
 
     Double startTime = parseTime(rawInput.get(0));
@@ -54,32 +57,50 @@ public class Parser
 // 12-06-18 16:30:1528817458 Setting pipeline to PLAYING ...
   private void bufferTime(int startLine, double startTime)
   {
-    for (int i = startLine; i <= rawInput.size(); i++)
+    double bufferingTime = 0;
+
+    for (int i = startLine + 1; i < rawInput.size(); i++)
     {
       // System.out.println(i);
+      if (rawInput.get(i).contains("PAUSED"))
+      {
+        // System.out.println("PUSED -1 > " + rawInput.get(i - 1));
+        // System.out.println("PASUED > " +rawInput.get(i));
+        // System.out.println("PASUED +1 > " + rawInput.get(i + 1));
+        startTime = parseTime(rawInput.get(i - 1));
+      }
+
       if (rawInput.get(i).contains("PLAYING"))
       {
         // System.out.print("Bufffering Time ");
-        System.out.printf("Buffering Time %f\n", startTime);
-        System.out.printf("Buffering Time %f\n", parseTime(rawInput.get(i)));
-        System.out.printf("Buffering Time %f\n", parseTime(rawInput.get(i)) - startTime);
-        System.out.println(rawInput.get(i));
-        System.out.println("Found you ;)");
-        break;
+        // System.out.printf("Pasued %f\n", startTime);
+        // System.out.printf("Playing %f\n", parseTime(rawInput.get(i + 1)));
+        // System.out.printf("Buffering Time %f\n", parseTime(rawInput.get(i + 1)) - startTime);
+        // System.out.println(rawInput.get(i));
+
+        bufferingTime += parseTime(rawInput.get(i + 1)) - startTime;
       }
+
+      if (rawInput.get(i).contains("/GstPlayBin:playbin0/GstInputSelector:inputselector0.GstPad:src:"))
+      {
+        System.out.println(rawInput.get(i));
+      }
+
     }
+    ///GstPlayBin:playbin0/GstInputSelector:inputselector0.GstPad:src:
+    System.out.println("Total buffering time = " + bufferingTime);
 
   }
 
   private double parseTime(String rawInput)
   {
-    String rawTime = rawInput.substring(0, 30);
+    String rawTime = rawInput.substring(0, 26);
     String localDateTimeStr = rawTime.replace(" ", "T");
     localDateTimeStr = localDateTimeStr.substring(0, 20);
     LocalDateTime localDateTime = LocalDateTime.parse(localDateTimeStr);
     ZoneId zoneId = ZoneId.systemDefault();
     double epoch = localDateTime.atZone(zoneId).toEpochSecond();
-    rawTime = "0" + rawTime.substring(19, 30);
+    rawTime = "0" + rawTime.substring(19, 26);
     epoch = epoch + Double.parseDouble(rawTime);
     //
     return epoch;
