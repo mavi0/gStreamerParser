@@ -60,6 +60,7 @@ public class Parser
   private void bufferTime(int startLine, double startTime)
   {
     double bufferingTime = 0;
+    double playtime = 0L;
 
     for (int i = startLine + 1; i < rawInput.size(); i++)
     {
@@ -71,6 +72,9 @@ public class Parser
         // System.out.println("PASUED +1 > " + rawInput.get(i + 1));
         startTime = parseTime(rawInput.get(i - 1));
         resolutionChanges.get(resolutionChanges.size() - 1).setEndTime(startTime);
+        playtime += resolutionChanges.get(resolutionChanges.size() - 1).getDuration();
+
+        System.out.printf("Res Time %f\n", resolutionChanges.get(resolutionChanges.size() - 1).getDuration());
       }
 
       if (rawInput.get(i).contains("PLAYING"))
@@ -86,12 +90,19 @@ public class Parser
 
       if (rawInput.get(i).contains("/GstPlayBin:playbin0/GstInputSelector:inputselector0.GstPad:src:"))
       {
+        if (resolutionChanges.size() > 0)
+        {
+          resolutionChanges.get(resolutionChanges.size() - 1).setEndTime(startTime);
+          playtime += resolutionChanges.get(resolutionChanges.size() - 1).getDuration();
+          System.out.printf("Res Time %f\n", resolutionChanges.get(resolutionChanges.size() - 1).getDuration());
+        }
         resolutionChanges.add(new Resolution(rawInput.get(i)));
       }
 
     }
     ///GstPlayBin:playbin0/GstInputSelector:inputselector0.GstPad:src:
     System.out.println("Total buffering time = " + bufferingTime);
+    System.out.printf("Playtime = %f\n", playtime);
 
   }
 

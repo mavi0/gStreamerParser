@@ -5,6 +5,7 @@ public class Resolution {
   private int height = 0;
   private double startTime = 0;
   private double endTime = 0;
+  private boolean mutable = true;
 
   public Resolution(String rawLine)
   {
@@ -25,11 +26,25 @@ public class Resolution {
 
   public void setEndTime(double endTime)
   {
-    this.endTime = endTime;
+    if (mutable)
+    {
+      this.endTime = endTime;
+      System.out.printf("START: %f ", startTime);
+      System.out.printf(" END: %f ", endTime);
+      System.out.println(" Width: " + width + " Height: " + height);
+    }
+
+    this.mutable = false;
   }
 
   public double getDuration()
   {
     return this.endTime - this.startTime;
   }
+
+  public boolean isMutable()
+  {
+    return this.mutable;
+  }
+
 }
