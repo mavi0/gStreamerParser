@@ -8,6 +8,7 @@ public class Parser
 {
   private ArrayList<String> rawInput;
   private ArrayList<Resolution> resolutionChanges;
+  private ArrayList<Double> bufferMeanValues;
   public Parser()
   {
     // // stream the file, generate the file to be parsed
@@ -22,6 +23,7 @@ public class Parser
 
     rawInput = new ArrayList<String>();
     resolutionChanges = new ArrayList<Resolution>();
+    bufferMeanValues = new ArrayList<Double>();
 
     try
     {
@@ -51,15 +53,15 @@ public class Parser
     // String p = "PLAYING";
     // System.out.println(tst2 + tst2.equals(p));
 
-    bufferTime(0, startTime);
+    parse(0, startTime);
     // System.out.println(rawInput.get(570));
     // System.out.println(rawInput.get(231).substring(47, 54));
 
   }
 // 12-06-18 16:30:1528817458 Setting pipeline to PLAYING ...
-  private void bufferTime(int startLine, double startTime)
+  private void parse(int startLine, double startTime)
   {
-    double bufferingTime = 0;
+    double bufferingTime = 0L;
     double playtime = 0L;
 
     for (int i = startLine + 1; i < rawInput.size(); i++)
@@ -67,47 +69,35 @@ public class Parser
       // System.out.println(i);
       if (rawInput.get(i).contains("PAUSED"))
       {
-        // System.out.println("PUSED -1 > " + rawInput.get(i - 1));
-        // System.out.println("PASUED > " +rawInput.get(i));
-        // System.out.println("PASUED +1 > " + rawInput.get(i + 1));
         startTime = parseTime(rawInput.get(i - 1));
         resolutionChanges.get(resolutionChanges.size() - 1).setEndTime(startTime);
-        // if (resolutionChanges.get(resolutionChanges.size() - 1).isMutable())
-          // playtime += resolutionChanges.get(resolutionChanges.size() - 1).getDuration();
         System.out.printf("Res Time PAUSED %f\n", resolutionChanges.get(resolutionChanges.size() - 1).getDuration());
       }
 
       if (rawInput.get(i).contains("PLAYING"))
       {
-        // System.out.print("Bufffering Time ");
-        // System.out.printf("Pasued %f\n", startTime);
-        // System.out.printf("Playing %f\n", parseTime(rawInput.get(i + 1)));
-        // System.out.printf("Buffering Time %f\n", parseTime(rawInput.get(i + 1)) - startTime);
-        // System.out.println(rawInput.get(i));
-
-        bufferingTime += parseTime(rawInput.get(i + 1)) - startTime;
+        double buffer = parseTime(rawInput.get(i + 1)) - startTime;
+        bufferingTime += buffer;
+        bufferMeanValues.add(buffer);
       }
 
       if (rawInput.get(i).contains("/GstPlayBin:playbin0/GstInputSelector:inputselector0.GstPad:src:"))
       {
         if (resolutionChanges.size() > 0)
-        {
           resolutionChanges.get(resolutionChanges.size() - 1).setEndTime(parseTime(rawInput.get(i - 1)));
-          // if (resolutionChanges.get(resolutionChanges.size() - 1).isMutable())
-            // playtime += resolutionChanges.get(resolutionChanges.size() - 1).getDuration();
-          System.out.printf("Res Time OTHER %f\n", resolutionChanges.get(resolutionChanges.size() - 1).getDuration());
-        }
         resolutionChanges.add(new Resolution(rawInput.get(i)));
       }
 
     }
-    ///GstPlayBin:playbin0/GstInputSelector:inputselector0.GstPad:src:
+
     System.out.println("Total buffering time = " + bufferingTime);
 
     for (int i = 0; i < resolutionChanges.size(); i++)
-    {
       playtime += resolutionChanges.get(i).getDuration();
-    }
+
+    for (int i = 0; i < bufferMeanValues.size(); i++)
+      System.out.printf("BUFFERING VALS = %f\n", bufferMeanValues.get(i));
+
     System.out.printf("Playtime = %f\n", playtime);
 
   }

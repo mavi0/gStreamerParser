@@ -29,9 +29,9 @@ public class Resolution {
     if (mutable)
     {
       this.endTime = endTime;
-      System.out.printf("START: %f ", startTime);
-      System.out.printf(" END: %f ", endTime);
-      System.out.println(" Width: " + width + " Height: " + height);
+      // System.out.printf("START: %f ", startTime);
+      // System.out.printf(" END: %f ", endTime);
+      // System.out.println(" Width: " + width + " Height: " + height);
     }
 
     this.mutable = false;
