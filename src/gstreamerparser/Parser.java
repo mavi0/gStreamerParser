@@ -7,6 +7,7 @@ import java.time.*;
 public class Parser
 {
   private ArrayList<String> rawInput;
+  private ArrayList<Resolution> resolutionChanges;
   public Parser()
   {
     // // stream the file, generate the file to be parsed
@@ -20,6 +21,7 @@ public class Parser
     // }
 
     rawInput = new ArrayList<String>();
+    resolutionChanges = new ArrayList<Resolution>();
 
     try
     {
@@ -68,6 +70,7 @@ public class Parser
         // System.out.println("PASUED > " +rawInput.get(i));
         // System.out.println("PASUED +1 > " + rawInput.get(i + 1));
         startTime = parseTime(rawInput.get(i - 1));
+        resolutionChanges.get(resolutionChanges.size() - 1).setEndTime(startTime);
       }
 
       if (rawInput.get(i).contains("PLAYING"))
@@ -83,7 +86,7 @@ public class Parser
 
       if (rawInput.get(i).contains("/GstPlayBin:playbin0/GstInputSelector:inputselector0.GstPad:src:"))
       {
-        System.out.println(rawInput.get(i));
+        resolutionChanges.add(new Resolution(rawInput.get(i)));
       }
 
     }
@@ -92,7 +95,7 @@ public class Parser
 
   }
 
-  private double parseTime(String rawInput)
+  public static double parseTime(String rawInput)
   {
     String rawTime = rawInput.substring(0, 26);
     String localDateTimeStr = rawTime.replace(" ", "T");
