@@ -3,7 +3,7 @@ package gstreamerparser;
 import java.io.*;
 import java.util.*;
 import java.time.*;
-import com.google.gson;
+import com.google.gson.Gson;
 
 public class Parser
 {
