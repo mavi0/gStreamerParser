@@ -8,7 +8,7 @@ public class Parser
 {
   private ArrayList<String> rawInput;
   private ArrayList<Resolution> resolutionChanges;
-  private ArrayList<Double> bufferMeanValues;
+  // private ArrayList<Double> bufferMeanValues;
   public Parser()
   {
     // // stream the file, generate the file to be parsed
@@ -23,7 +23,7 @@ public class Parser
 
     rawInput = new ArrayList<String>();
     resolutionChanges = new ArrayList<Resolution>();
-    bufferMeanValues = new ArrayList<Double>();
+    // bufferMeanValues = new ArrayList<Double>();
 
     try
     {
@@ -63,6 +63,8 @@ public class Parser
   {
     double bufferingTime = 0L;
     double playtime = 0L;
+    double[] resolutionTimes = new double[8]; // 0 = 108p, 1 = 270p, 2 = 360p, 3 = 432p, 4 = 576p, 5 = 720p, 6 = 1080, 7 = 2160p
+    int bufferCount = 0;
 
     for (int i = startLine + 1; i < rawInput.size(); i++)
     {
@@ -70,35 +72,46 @@ public class Parser
       if (rawInput.get(i).contains("PAUSED"))
       {
         startTime = parseTime(rawInput.get(i - 1));
-        resolutionChanges.get(resolutionChanges.size() - 1).setEndTime(startTime);
-        System.out.printf("Res Time PAUSED %f\n", resolutionChanges.get(resolutionChanges.size() - 1).getDuration());
+
+        resolutionTimes = resolutionChanges.get(resolutionChanges.size() - 1).setEndTime(startTime, resolutionTimes);
+        // System.out.printf("Res Time PAUSED %f\n", resolutionChanges.get(resolutionChanges.size() - 1).getDuration());
       }
 
       if (rawInput.get(i).contains("PLAYING"))
       {
         double buffer = parseTime(rawInput.get(i + 1)) - startTime;
         bufferingTime += buffer;
-        bufferMeanValues.add(buffer);
+        bufferCount++;
+        // bufferMeanValues.add(buffer);
       }
 
       if (rawInput.get(i).contains("/GstPlayBin:playbin0/GstInputSelector:inputselector0.GstPad:src:"))
       {
         if (resolutionChanges.size() > 0)
-          resolutionChanges.get(resolutionChanges.size() - 1).setEndTime(parseTime(rawInput.get(i - 1)));
+          resolutionTimes = resolutionChanges.get(resolutionChanges.size() - 1).setEndTime(parseTime(rawInput.get(i - 1)), resolutionTimes);
         resolutionChanges.add(new Resolution(rawInput.get(i)));
       }
 
     }
+    System.out.printf("Number of buffering events = %d\n", bufferCount);
+    System.out.printf("Total buffering time = %f\n", bufferingTime);
+    System.out.printf("Mean time buffering = %f\n", bufferingTime/bufferCount);
 
-    System.out.println("Total buffering time = " + bufferingTime);
 
     for (int i = 0; i < resolutionChanges.size(); i++)
+    {
       playtime += resolutionChanges.get(i).getDuration();
+      System.out.printf("Playtime (RES) = %f\n", playtime);
+      System.out.println(resolutionChanges.get(i).getHeight());
+    }
 
-    for (int i = 0; i < bufferMeanValues.size(); i++)
-      System.out.printf("BUFFERING VALS = %f\n", bufferMeanValues.get(i));
+    // for (int i = 0; i < bufferMeanValues.size(); i++)
+    // System.out.printf("BUFFERING VALS = %f\n", bufferMeanValues.get(i));
 
-    System.out.printf("Playtime = %f\n", playtime);
+    System.out.printf("Playtime (RES) = %f\n", playtime);
+    System.out.printf("Mean time between buffering - %f\n", playtime/bufferCount);
+    System.out.println("Number of change of resolution events = " + resolutionChanges.size());
+    System.out.printf("%f", resolutionTimes[7]);
 
   }
 
