@@ -2,6 +2,7 @@ package gstreamerparser;
 
 import java.io.*;
 import java.util.*;
+import java.io.File;
 
 public class Driver
 {
@@ -9,7 +10,25 @@ public class Driver
 
   public static void main(String[] args)
   {
-    Parser p = new Parser();
+    //check args are there
+    if ( args.length < 1 || args.length > 1)
+    {
+      System.err.println("Expected usage is: java -jar parser.jar <fileToParse>");
+      System.exit(1);
+    }
+
+    File f = new File(args[0]);
+
+    //check the file exists
+    if (f.exists())
+    {
+      System.err.println("File '" + args[0] + "' does not exist.");
+      System.err.println("Expected usage is: java -jar parser.jar <fileToParse>");
+      System.exit(1);
+    }
+
+    //continue with a valid fileName
+    Parser p = new Parser(args[0]);
   }
 
 }

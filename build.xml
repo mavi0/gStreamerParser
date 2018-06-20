@@ -21,9 +21,18 @@
     </javac>
   </target>
 
-<!--
-  <target name="doc" depends="build">
-    <javadoc sourcepath -->
+
+    <target name="doc" depends="build">
+      <javadoc sourcepath="src/" destdir="doc/">
+        <group title="client" packages="client" />
+        <group title="server" packages="server" />
+        <classpath>
+          <fileset dir="lib">
+            <include name="*.jar"/>
+          </fileset>
+        </classpath>
+      </javadoc>
+  </target>
 
   <target name="jar" depends="build">
     <jar destfile="out/parser.jar" basedir="build" includes="gstreamerparser/*.class">

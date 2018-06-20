@@ -3,31 +3,21 @@ package gstreamerparser;
 import java.io.*;
 import java.util.*;
 import java.time.*;
+import com.google.gson;
 
 public class Parser
 {
   private ArrayList<String> rawInput;
   private ArrayList<Resolution> resolutionChanges;
   // private ArrayList<Double> bufferMeanValues;
-  public Parser()
+  public Parser(String filename)
   {
-    // // stream the file, generate the file to be parsed
-    // try{
-    //   Process p = Runtime.getRuntime().exec(new String[]{"bash","-c", CMD});
-    //   p.waitFor();
-    // }
-    // catch (Exception e)
-    // {
-    //   e.printStackTrace();
-    // }
-
     rawInput = new ArrayList<String>();
     resolutionChanges = new ArrayList<Resolution>();
-    // bufferMeanValues = new ArrayList<Double>();
 
     try
     {
-      File file = new File("raw.log");
+      File file = new File(filename);
       BufferedReader br = new BufferedReader(new FileReader(file));
 
       String st;
@@ -42,23 +32,12 @@ public class Parser
       e.printStackTrace();
     }
 
-    // for (int i = 0; i < rawInput.size(); i++)
-    //   System.out.println(rawInput.get(i));
-
-    // System.out.println(rawInput.get(1));
-
     Double startTime = parseTime(rawInput.get(0));
-    // String tst = "12-06-18 16:30:1528817458 Setting pipeline to PLAYING ...";
-    // String tst2 = tst.substring(46, 53);
-    // String p = "PLAYING";
-    // System.out.println(tst2 + tst2.equals(p));
-
     parse(0, startTime);
-    // System.out.println(rawInput.get(570));
-    // System.out.println(rawInput.get(231).substring(47, 54));
 
   }
 // 12-06-18 16:30:1528817458 Setting pipeline to PLAYING ...
+
   private void parse(int startLine, double startTime)
   {
     double bufferingTime = 0L;
@@ -93,6 +72,7 @@ public class Parser
       }
 
     }
+
     System.out.printf("Number of buffering events = %d\n", bufferCount);
     System.out.printf("Total buffering time = %f\n", bufferingTime);
     System.out.printf("Mean time buffering = %f\n", bufferingTime/bufferCount);
@@ -113,8 +93,22 @@ public class Parser
     System.out.println("Number of change of resolution events = " + resolutionChanges.size());
     System.out.printf("%f", resolutionTimes[7]);
 
+    Output out = new Output();
+    out.bufferingEventsCount = bufferCount;
+    out.totalBufferingTime = bufferingTime;
+    out.meanTimeBuffering = (bufferingTime/bufferCount);
+    out.totalPlaytime = playtime;
+    out.meanTimeBetweenBuffering = (playtime/bufferCount);
+    out.resolutionChangeCount = resolutionChanges.size();
+    out.resolutionTimes = resolutionTimes;
+
+    Gson gson = new Gson();
+
+    System.out.println(gson.toJson(out));
+
   }
 
+  //cheat
   public static double parseTime(String rawInput)
   {
     String rawTime = rawInput.substring(0, 26);
@@ -127,5 +121,17 @@ public class Parser
     epoch = epoch + Double.parseDouble(rawTime);
     //
     return epoch;
+  }
+
+  private class Output
+  {
+    public int bufferingEventsCount;
+    public double totalBufferingTime;
+    public double meanTimeBuffering;
+    public double totalPlaytime;
+    public double meanTimeBetweenBuffering;
+    public int resolutionChangeCount;
+    public double[] resolutionTimes;
+
   }
 }
