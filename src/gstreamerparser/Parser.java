@@ -4,6 +4,8 @@ import java.io.*;
 import java.util.*;
 import java.time.*;
 import com.google.gson.Gson;
+import java.sql.Timestamp;
+import java.util.Date;
 
 public class Parser
 {
@@ -104,7 +106,23 @@ public class Parser
 
     Gson gson = new Gson();
 
-    System.out.println(gson.toJson(out));
+    Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+
+    try
+    {
+      File file = new File(timestamp + ".json");
+			FileWriter fileWriter = new FileWriter(file);
+      fileWriter.write(gson.toJson(out));
+			fileWriter.flush();
+			fileWriter.close();
+
+      // PrintWriter outFile = new PrintWriter();
+      // outFile.println(gson.toJson(out));
+    }
+    catch(IOException e)
+    {
+      e.printStackTrace();
+    }
 
   }
 

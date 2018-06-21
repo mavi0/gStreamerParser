@@ -1,5 +1,5 @@
 <?xml version = "1.0"?>
-<project name="r3" default="run">
+<project name="gStreamerParser" default="run">
 
   <path id="classpath-main">
     <fileset dir="lib">
@@ -44,6 +44,8 @@
   </target>
 
   <target name="run" depends="jar">
-        <java jar="out/parser.jar" fork="true"/>
-    </target>
+        <java jar="out/parser.jar" fork="true">
+          <arg value="${logfile}"/>
+        </java>
+  </target>
 </project>

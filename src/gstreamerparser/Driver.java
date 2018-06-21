@@ -20,7 +20,7 @@ public class Driver
     File f = new File(args[0]);
 
     //check the file exists
-    if (f.exists())
+    if (!f.exists())
     {
       System.err.println("File '" + args[0] + "' does not exist.");
       System.err.println("Expected usage is: java -jar parser.jar <fileToParse>");
