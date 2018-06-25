@@ -105,16 +105,22 @@ public class Parser
     out.resolutionTimes = resolutionTimes;
 
     Gson gson = new Gson();
-
     Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
     try
     {
-      File file = new File(timestamp + ".json");
+      //archive the result
+      File file = new File("logs/" + timestamp + ".json");
 			FileWriter fileWriter = new FileWriter(file);
       fileWriter.write(gson.toJson(out));
 			fileWriter.flush();
 			fileWriter.close();
+      //overwrite file to save
+      File fileB = new File("log.json");
+			FileWriter fileWriterB = new FileWriter(fileB);
+      fileWriterB.write(gson.toJson(out));
+			fileWriterB.flush();
+			fileWriterB.close();
 
       // PrintWriter outFile = new PrintWriter();
       // outFile.println(gson.toJson(out));
