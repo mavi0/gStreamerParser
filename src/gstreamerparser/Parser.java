@@ -110,7 +110,7 @@ public class Parser
     try
     {
       //archive the result
-      File file = new File("logs/" + timestamp + ".json");
+      File file = new File("log/" + timestamp + ".json");
 			FileWriter fileWriter = new FileWriter(file);
       fileWriter.write(gson.toJson(out));
 			fileWriter.flush();
