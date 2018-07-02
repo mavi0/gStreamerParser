@@ -29,7 +29,7 @@ public class MPDRead
     	System.out.println("----------------------------");
 
     	for (int temp = 0; temp < nList.getLength(); temp++) {
-    	  Node nNode = nList.item(temp);		
+    	  Node nNode = nList.item(temp);
     		System.out.println("\nCurrent Element :" + nNode.getNodeName());
 
     		if (nNode.getNodeType() == Node.ELEMENT_NODE) {

@@ -27,6 +27,7 @@ public class Driver
       System.exit(1);
     }
 
+    MPDRead r = new MPDRead(args[1]);
     //continue with a valid fileName
     Parser p = new Parser(args[0]);
   }
