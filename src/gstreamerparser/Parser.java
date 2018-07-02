@@ -66,7 +66,7 @@ public class Parser
         // bufferMeanValues.add(buffer);
       }
 
-      if (rawInput.get(i).contains("/GstPlayBin:playbin0/GstInputSelector:inputselector0.GstPad:src:"))
+      if (rawInput.get(i).contains("/GstPlayBin:playbin0./GstInputSelector:inputselector0.GstPad:src:"))
       {
         if (resolutionChanges.size() > 0)
           resolutionTimes = resolutionChanges.get(resolutionChanges.size() - 1).setEndTime(parseTime(rawInput.get(i - 1)), resolutionTimes);

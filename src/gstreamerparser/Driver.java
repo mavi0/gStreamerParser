@@ -11,19 +11,19 @@ public class Driver
   public static void main(String[] args)
   {
     //check args are there
-    if ( args.length < 1 || args.length > 1)
+    if ( args.length < 2 || args.length > 2)
     {
-      System.err.println("Expected usage is: java -jar parser.jar <fileToParse>");
+      System.err.println("Expected usage is: java -jar parser.jar <logToParse> <mpdFile> or\n ant -Dlogfile=<logToParse> -Dmpd=<mpdFile");
       System.exit(1);
     }
 
     File f = new File(args[0]);
-
+    File f2 = new File(args[1]);
     //check the file exists
-    if (!f.exists())
+    if (!f.exists() || !f2.exists())
     {
-      System.err.println("File '" + args[0] + "' does not exist.");
-      System.err.println("Expected usage is: java -jar parser.jar <fileToParse>");
+      System.err.println("File '" + args[0] + "' or '" + args[1] + "' does not exist.");
+      System.err.println("Expected usage is: java -jar parser.jar <logToParse> <mpdFile> or\n ant -Dlogfile=<logToParse> -Dmpd=<mpdFile");
       System.exit(1);
     }
 
