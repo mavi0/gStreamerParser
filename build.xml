@@ -46,6 +46,7 @@
   <target name="run" depends="jar">
         <java jar="out/parser.jar" fork="true">
           <arg value="${logfile}"/>
+          <arg value="${mpd}"/>
         </java>
   </target>
 </project>

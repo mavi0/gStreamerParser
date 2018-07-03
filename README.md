@@ -6,4 +6,4 @@ sudo apt install moreutils ant xvfb default-jdk libgstreamer1.0-0 gstreamer1.0-p
 
 ```
 
-```ant``` Compiles and runs the program (hint: you need ant)
+``` ant -Dlogfile=raw.log -Dmpd=testMPD/MultiRes.mpd``` Compiles and runs the program (hint: you need ant)
