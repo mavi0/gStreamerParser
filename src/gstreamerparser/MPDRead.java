@@ -38,15 +38,9 @@ public class MPDRead {
         // System.out.println("\nCurrent Element :" + nNode.getNodeName());
         if (nNode.getNodeType() == Node.ELEMENT_NODE) {
           Element eElement = (Element) nNode;
-          // System.out.println("" + eElement.getAttribute("id"));
-
           // Get the element ID of the Representation, use that as the HashMap ID.
           // Add Representation width, height, bandwidth to an array and add that array to the main hashmap
           int[] resArray = new int[3];
-          System.out.println(eElement.getAttribute("id"));
-          System.out.println(eElement.getAttribute("width"));
-          System.out.println(eElement.getAttribute("height"));
-          System.out.println(eElement.getAttribute("bandwidth"));
           resArray[0] = Integer.parseInt(eElement.getAttribute("width"));
           resArray[1] = Integer.parseInt(eElement.getAttribute("height"));
           resArray[2] = Integer.parseInt(eElement.getAttribute("bandwidth"));
