@@ -27,10 +27,11 @@ public class Driver
       System.err.println("Expected usage is: java -jar parser.jar <logToParse> <mpdFile> or\n ant -Dlogfile=<logToParse> -Dmpd=<mpdFile");
       System.exit(1);
     }
-
-    MPDRead r = new MPDRead(args[1]);
     //continue with a valid fileName
-    Parser p = new Parser(args[0]);
+    //read the mpdfile and generate HashMap
+    MPDRead r = new MPDRead(args[1]);
+    //main class
+    Parser p = new Parser(args[0], r.getMPD());
   }
 
 }
