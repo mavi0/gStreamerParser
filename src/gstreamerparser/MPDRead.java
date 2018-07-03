@@ -11,6 +11,7 @@ import java.util.*;
 
 public class MPDRead {
   private HashMap<String, int[]> mpdMap = new HashMap<>();
+
   /**
    * Class to parse an MPD XML file.
    * Retrieve the bandwidth/resolutions that the stream offers for use in parsing.
@@ -40,11 +41,17 @@ public class MPDRead {
           Element eElement = (Element) nNode;
           // Get the element ID of the Representation, use that as the HashMap ID.
           // Add Representation width, height, bandwidth to an array and add that array to the main hashmap
-          int[] resArray = new int[3];
-          resArray[0] = Integer.parseInt(eElement.getAttribute("width"));
-          resArray[1] = Integer.parseInt(eElement.getAttribute("height"));
-          resArray[2] = Integer.parseInt(eElement.getAttribute("bandwidth"));
-          mpdMap.put(eElement.getAttribute("id"), resArray);
+          // System.out.println(eElement.getAttribute("id"));
+          // System.out.println(eElement.getAttribute("width"));
+          // System.out.println(eElement.getAttribute("height"));
+          // System.out.println(eElement.getAttribute("bandwidth"));
+          if (eElement.getAttribute(mimeType).contains("video")) {
+            int[] resArray = new int[3];
+            resArray[0] = Integer.parseInt(eElement.getAttribute("width"));
+            resArray[1] = Integer.parseInt(eElement.getAttribute("height"));
+            resArray[2] = Integer.parseInt(eElement.getAttribute("bandwidth"));
+            mpdMap.put(eElement.getAttribute("id"), resArray);
+          }
         }
       }
     } catch (Exception e) {
@@ -56,8 +63,7 @@ public class MPDRead {
    * Get hashmap, contains MPD representation details
    * @return String = representation ID, int[0] = width, int[1] = height, int[2] = bandwidth
    */
-  public HashMap<String, int[]> getMPD()
-  {
+  public HashMap<String, int[]> getMPD() {
     return mpdMap;
   }
 }

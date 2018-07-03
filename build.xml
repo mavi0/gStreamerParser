@@ -15,7 +15,7 @@
 
   <target name="build" depends="clean">
     <mkdir dir="build/gstreamerparser"/>
-    <javac destdir="build">
+    <javac destdir="build" debug="true" debuglevel="lines,vars,source">
       <src path="src/"/>
       <classpath refid="classpath-main"/>
     </javac>
