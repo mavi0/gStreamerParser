@@ -42,20 +42,21 @@ public class Parser {
     parse(0, startTime);
 
   }
-  
+
   // 12-06-18 16:30:1528817458 Setting pipeline to PLAYING ...
 
   private void parse(int startLine, double startTime) {
     double bufferingTime = 0L;
     double playtime = 0L;
-    double[] resolutionTimes = new double[8]; // 0 = 108p, 1 = 270p, 2 = 360p, 3 = 432p, 4 = 576p, 5 = 720p, 6 = 1080, 7 = 2160p
+    // double[] resolutionTimes = new double[8]; // 0 = 108p, 1 = 270p, 2 = 360p, 3 = 432p, 4 = 576p, 5 = 720p, 6 = 1080, 7 = 2160p
+    double[] resolutionTimes = new double[this.mpdMap.size() + 1];
     int bufferCount = 0;
 
     for (int i = startLine + 1; i < rawInput.size(); i++) {
       // System.out.println(i);
       if (rawInput.get(i).contains("PAUSED")) {
         startTime = parseTime(rawInput.get(i - 1));
-
+        //get releveant resolution object, set its endTime.
         resolutionTimes = resolutionChanges.get(resolutionChanges.size() - 1).setEndTime(startTime, resolutionTimes);
         // System.out.printf("Res Time PAUSED %f\n", resolutionChanges.get(resolutionChanges.size() - 1).getDuration());
       }
@@ -71,7 +72,7 @@ public class Parser {
         if (resolutionChanges.size() > 0)
           resolutionTimes = resolutionChanges.get(resolutionChanges.size() - 1)
               .setEndTime(parseTime(rawInput.get(i - 1)), resolutionTimes);
-        resolutionChanges.add(new Resolution(rawInput.get(i)));
+        resolutionChanges.add(new Resolution(rawInput.get(i), this.mpdMap));
       }
 
     }

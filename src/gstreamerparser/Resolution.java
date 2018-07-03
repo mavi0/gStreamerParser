@@ -7,7 +7,7 @@ public class Resolution {
   private double endTime = 0;
   private boolean mutable = true;
 
-  public Resolution(String rawLine)
+  public Resolution(String rawLine, HashMap<String, int[]> mpdMap)
   {
     this.height = Integer.parseInt(rawLine.substring(rawLine.indexOf("height=(int)") + 12, rawLine.indexOf(", interlace-mode=(string)")));
     this.width = Integer.parseInt(rawLine.substring(rawLine.indexOf("width=(int)") + 11, rawLine.indexOf(", height=(int)")));
