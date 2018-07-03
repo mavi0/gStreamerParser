@@ -1,5 +1,7 @@
 package gstreamerparser;
 
+import java.util.*;
+
 public class Resolution {
   private int width = 0;
   private int height = 0;
@@ -15,6 +17,7 @@ public class Resolution {
     this.width = Integer
         .parseInt(rawLine.substring(rawLine.indexOf("width=(int)") + 11, rawLine.indexOf(", height=(int)")));
     this.startTime = Parser.parseTime(rawLine);
+    searchMapWidth(1920);
   }
 
   public int getWidth() {
@@ -57,6 +60,7 @@ public class Resolution {
       System.out.println(pair.getKey() + " = " + pair.getValue());
       it.remove(); // avoids a ConcurrentModificationException
     }
+    return true;
   }
 
   private boolean searchMapWidth(int width) {
