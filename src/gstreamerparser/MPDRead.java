@@ -7,6 +7,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 import java.io.File;
+import java.util.*;
 
 public class MPDRead {
   private HashMap<String, int[]> mpdMap = new HashMap<>();
@@ -42,6 +43,10 @@ public class MPDRead {
           // Get the element ID of the Representation, use that as the HashMap ID.
           // Add Representation width, height, bandwidth to an array and add that array to the main hashmap
           int[] resArray = new int[3];
+          System.out.println(eElement.getAttribute("id"));
+          System.out.println(eElement.getAttribute("width"));
+          System.out.println(eElement.getAttribute("height"));
+          System.out.println(eElement.getAttribute("bandwidth"));
           resArray[0] = Integer.parseInt(eElement.getAttribute("width"));
           resArray[1] = Integer.parseInt(eElement.getAttribute("height"));
           resArray[2] = Integer.parseInt(eElement.getAttribute("bandwidth"));
@@ -55,7 +60,7 @@ public class MPDRead {
 
   /**
    * Get hashmap, contains MPD representation details
-   * @return String = representation ID, int[0] = width, int[1] = height, int[2] = bandwidth 
+   * @return String = representation ID, int[0] = width, int[1] = height, int[2] = bandwidth
    */
   public HashMap<String, int[]> getMPD()
   {
