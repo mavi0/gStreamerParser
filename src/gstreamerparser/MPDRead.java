@@ -9,7 +9,7 @@ import org.w3c.dom.Element;
 import java.io.File;
 
 public class MPDRead {
-  private Map<String, int[]> mpdMap = new HashMap<>();
+  private HashMap<String, int[]> mpdMap = new HashMap<>();
   /**
    * Class to parse an MPD XML file.
    * Retrieve the bandwidth/resolutions that the stream offers for use in parsing.
@@ -35,20 +35,30 @@ public class MPDRead {
       for (int temp = 0; temp < nList.getLength(); temp++) {
         Node nNode = nList.item(temp);
         // System.out.println("\nCurrent Element :" + nNode.getNodeName());
-        int[] resArray = new int[3];
         if (nNode.getNodeType() == Node.ELEMENT_NODE) {
           Element eElement = (Element) nNode;
           // System.out.println("" + eElement.getAttribute("id"));
-        eElement.getAttribute("id")
-        resArray[0] = eElement.getAttribute("width");
-        resArray[1] = eElement.getAttribute("height");
-        resArray[]
-        eElement.getAttribute("id")
+
+          // Get the element ID of the Representation, use that as the HashMap ID.
+          // Add Representation width, height, bandwidth to an array and add that array to the main hashmap
+          int[] resArray = new int[3];
+          resArray[0] = Integer.parseInt(eElement.getAttribute("width"));
+          resArray[1] = Integer.parseInt(eElement.getAttribute("height"));
+          resArray[2] = Integer.parseInt(eElement.getAttribute("bandwidth"));
+          mpdMap.put(eElement.getAttribute("id"), resArray);
         }
       }
     } catch (Exception e) {
       e.printStackTrace();
     }
+  }
 
+  /**
+   * Get hashmap, contains MPD representation details
+   * @return String = representation ID, int[0] = width, int[1] = height, int[2] = bandwidth 
+   */
+  public HashMap<String, int[]> getMPD()
+  {
+    return mpdMap;
   }
 }
