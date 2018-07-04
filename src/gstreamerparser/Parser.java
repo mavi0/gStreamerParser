@@ -66,7 +66,6 @@ public class Parser {
     for (int i = prerolledLine(startLine); i < rawInput.size(); i++) {
       // System.out.println(i);
 
-
       if (rawInput.get(i).contains("PAUSED")) {
         startTime = parseTime(i, rawInput);
         //get releveant resolution object, set its endTime.
@@ -83,8 +82,8 @@ public class Parser {
 
       if (rawInput.get(i).contains("/GstPlayBin:playbin0./GstInputSelector:inputselector0.GstPad:src:")) {
         if (resolutionChanges.size() > 0)
-          resolutionTimes = resolutionChanges.get(resolutionChanges.size() - 1)
-              .setEndTime(parseTime(i, rawInput), resolutionTimes);
+          resolutionTimes = resolutionChanges.get(resolutionChanges.size() - 1).setEndTime(parseTime(i, rawInput),
+              resolutionTimes);
         resolutionChanges.add(new Resolution(rawInput.get(i), this.mpdMap, parseTime(i, rawInput)));
       }
 
@@ -162,15 +161,14 @@ public class Parser {
    * @param  rawInput   input arrayList
    * @return            the raw time as a string
    */
-  private static String findTimestamp(int lineNumber, ArrayList<String> rawInput) {
+  private static String findTimestampOLD(int lineNumber, ArrayList<String> rawInput) {
     //skip lines which are too short
     try {
-      if (rawInput.get(lineNumber).length() < 27)
-      {
+      if (rawInput.get(lineNumber).length() < 27) {
         System.out.println("TOO SMALL " + rawInput.get(lineNumber).length() + " | " + rawInput.get(lineNumber));
         System.out.println("Line: " + lineNumber);
         lineNumber = lineNumber + 1;
-        System.out.println( "Line1: " + lineNumber);
+        System.out.println("Line1: " + lineNumber);
         return findTimestamp(lineNumber, rawInput);
       }
     } catch (Exception e) {
@@ -178,7 +176,8 @@ public class Parser {
     }
     String rawTime = "";
     //generate the regex
-    Pattern timeRegex = Pattern.compile("\\d\\d\\d\\d\\p{Punct}\\d\\d\\p{Punct}\\d\\d\\s\\d\\d\\p{Punct}\\d\\d\\p{Punct}\\d\\d\\p{Punct}\\d\\d\\d\\d\\d\\d\\d\\d\\d\\d");
+    Pattern timeRegex = Pattern.compile(
+        "\\d\\d\\d\\d\\p{Punct}\\d\\d\\p{Punct}\\d\\d\\s\\d\\d\\p{Punct}\\d\\d\\p{Punct}\\d\\d\\p{Punct}\\d\\d\\d\\d\\d\\d\\d\\d\\d\\d");
     //get the raw timestamp from substring
     rawTime = rawInput.get(lineNumber).substring(0, 26);
     Matcher matcher = timeRegex.matcher(rawTime);
@@ -187,6 +186,31 @@ public class Parser {
       return rawTime;
     return findTimestamp(lineNumber + 1, rawInput);
   }
+
+  private static String findTimestamp(int lineNumber, ArrayList<String> rawInput) {
+    String rawTime = "";
+    for (; lineNumber < rawInput.size(); lineNumber++)
+      if (rawInput.get(lineNumber).length() > 26) {
+        Pattern timeRegex = Pattern.compile(
+            "\\d\\d\\d\\d\\p{Punct}\\d\\d\\p{Punct}\\d\\d\\s\\d\\d\\p{Punct}\\d\\d\\p{Punct}\\d\\d\\p{Punct}\\d\\d\\d\\d\\d\\d\\d\\d\\d\\d");
+        rawTime = rawInput.get(lineNumber).substring(0, 26);
+        Matcher matcher = timeRegex.matcher(rawTime);
+        //try and get a timestamp
+        if (matcher.matches())
+          return rawTime;
+      }
+      return NULL;
+  }
+  // {
+  //   System.out.println("TOO SMALL " + rawInput.get(lineNumber).length() + " | " + rawInput.get(lineNumber));
+  //   System.out.println("Line: " + lineNumber);
+  //   lineNumber = lineNumber + 1;
+  //   System.out.println( "Line1: " + lineNumber);
+  //   return findTimestamp(lineNumber, rawInput);
+  // }
+
+  //generate the regex
+  //get the raw timestamp from substring
 
   private class Output {
     public int bufferingEventsCount;
