@@ -165,7 +165,13 @@ public class Parser {
   private static String findTimestamp(int lineNumber, ArrayList<String> rawInput) {
     String rawTime = "";
     Pattern timeRegex = Pattern.compile("\\d\\d\\d\\d\\p{Punct}\\d\\d\\p{Punct}\\d\\d\\s\\d\\d\\p{Punct}\\d\\d\\p{Punct}\\d\\d\\p{Punct}\\d\\d\\d\\d\\d\\d\\d\\d\\d\\d");
-    System.out.println("PRE REGEX: " + rawInput.get(lineNumber));
+    // // System.out.println("PRE REGEX: " + );
+    // try {
+    //
+    // } catch (StringIndexOutOfBoundsException e) {
+    //   System.out.println(rawInput.get(lineNumber));
+    //   // e.printStackTrace();
+    // }
     rawTime = rawInput.get(lineNumber).substring(0, 26);
     Matcher matcher = timeRegex.matcher(rawTime);
     if (matcher.matches())
