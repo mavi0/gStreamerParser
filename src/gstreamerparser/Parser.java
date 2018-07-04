@@ -45,15 +45,27 @@ public class Parser {
 
   // 12-06-18 16:30:1528817458 Setting pipeline to PLAYING ...
 
+  //iterate over each line in the raw log file, until PREROLLED is reached. Return the line number of the next line.
+  private int prerolledLine(int startLine) {
+    for (int i = startLine; i < rawInput.size(); i++)
+      if (rawInput.get(i).contains("PREROLLED"))
+        return i + 1;
+    return startLine;
+  }
+
   private void parse(int startLine, double startTime) {
     double bufferingTime = 0L;
     double playtime = 0L;
     // double[] resolutionTimes = new double[8]; // 0 = 108p, 1 = 270p, 2 = 360p, 3 = 432p, 4 = 576p, 5 = 720p, 6 = 1080, 7 = 2160p
     double[] resolutionTimes = new double[this.mpdMap.size() + 1];
     int bufferCount = 0;
+    boolean prerolled = false;
 
-    for (int i = startLine + 1; i < rawInput.size(); i++) {
+    //iterate over each line in the raw log file, until PREROLLED is reached. Return the line number of the next line.
+    for (int i = prerolledLine(startLine); i < rawInput.size(); i++) {
       // System.out.println(i);
+
+
       if (rawInput.get(i).contains("PAUSED")) {
         startTime = parseTime(rawInput.get(i - 1));
         //get releveant resolution object, set its endTime.
@@ -62,7 +74,7 @@ public class Parser {
       }
 
       if (rawInput.get(i).contains("PLAYING")) {
-        double buffer = parseTime(rawInput.get(i + 1)) - startTime;
+        double buffer = parseTime(i + 1) - startTime;
         bufferingTime += buffer;
         bufferCount++;
         // bufferMeanValues.add(buffer);
@@ -130,8 +142,8 @@ public class Parser {
   }
 
   //cheat
-  public static double parseTime(String rawInput) {
-    String rawTime = rawInput.substring(0, 26);
+  public static double parseTime(int lineNumber, ArrayList<String> rawInput) {
+    String rawTime = findTimestamp(lineNumber, rawInput);
     String localDateTimeStr = rawTime.replace(" ", "T");
     localDateTimeStr = localDateTimeStr.substring(0, 20);
     LocalDateTime localDateTime = LocalDateTime.parse(localDateTimeStr);
@@ -141,6 +153,22 @@ public class Parser {
     epoch = epoch + Double.parseDouble(rawTime);
     //
     return epoch;
+  }
+
+  /**
+   * recursivley search for a timestamp. If this line has no timestamp at the start, go to the next until a timestamp is found.
+   * @param  lineNumber line to search for a timestamp
+   * @param  rawInput   input arrayList
+   * @return            the raw time as a string
+   */
+  private static String findTimestamp(int lineNumber, ArrayList<String> rawInput) {
+    String rawTime = "";
+    Pattern timeRegex = Pattern.compile("\\d\\d\\d\\d\\p{Punct}\\d\\d\\p{Punct}\\d\\d\\s\\d\\d\\p{Punct}\\d\\d\\p{Punct}\\d\\d\\p{Punct}\\d\\d\\d\\d\\d\\d\\d\\d\\d\\d");
+    rawTime = rawInput.get(lineNumber).substring(0, 26);
+    Matcher matcher = timeRegex.matcher(rawTime);
+    if (matcher.matches())
+      return rawTime;
+    findTimestamp(lineNumber + 1, rawInput);
   }
 
   private class Output {
