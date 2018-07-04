@@ -10,13 +10,13 @@ public class Resolution {
   private boolean mutable = true;
   private HashMap<String, int[]> mpdMap;
 
-  public Resolution(String rawLine, HashMap<String, int[]> mpdMap) {
+  public Resolution(String rawLine, HashMap<String, int[]> mpdMap, double startTime) {
     this.mpdMap = mpdMap;
     this.height = Integer.parseInt(
         rawLine.substring(rawLine.indexOf("height=(int)") + 12, rawLine.indexOf(", interlace-mode=(string)")));
     this.width = Integer
         .parseInt(rawLine.substring(rawLine.indexOf("width=(int)") + 11, rawLine.indexOf(", height=(int)")));
-    this.startTime = Parser.parseTime(rawLine);
+    this.startTime = startTime;
     searchMapWidth(1920);
   }
 

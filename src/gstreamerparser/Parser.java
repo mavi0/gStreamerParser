@@ -38,7 +38,7 @@ public class Parser {
     }
 
     //get the start time of the file, and start parsing.
-    Double startTime = parseTime(rawInput.get(0));
+    Double startTime = parseTime(0, rawInput);
     parse(0, startTime);
 
   }
@@ -67,14 +67,14 @@ public class Parser {
 
 
       if (rawInput.get(i).contains("PAUSED")) {
-        startTime = parseTime(rawInput.get(i - 1));
+        startTime = parseTime(i, rawInput);
         //get releveant resolution object, set its endTime.
         resolutionTimes = resolutionChanges.get(resolutionChanges.size() - 1).setEndTime(startTime, resolutionTimes);
         // System.out.printf("Res Time PAUSED %f\n", resolutionChanges.get(resolutionChanges.size() - 1).getDuration());
       }
 
       if (rawInput.get(i).contains("PLAYING")) {
-        double buffer = parseTime(i + 1) - startTime;
+        double buffer = parseTime(i, rawInput) - startTime;
         bufferingTime += buffer;
         bufferCount++;
         // bufferMeanValues.add(buffer);
@@ -83,8 +83,8 @@ public class Parser {
       if (rawInput.get(i).contains("/GstPlayBin:playbin0./GstInputSelector:inputselector0.GstPad:src:")) {
         if (resolutionChanges.size() > 0)
           resolutionTimes = resolutionChanges.get(resolutionChanges.size() - 1)
-              .setEndTime(parseTime(rawInput.get(i - 1)), resolutionTimes);
-        resolutionChanges.add(new Resolution(rawInput.get(i), this.mpdMap));
+              .setEndTime(parseTime(i, rawInput), resolutionTimes);
+        resolutionChanges.add(new Resolution(rawInput.get(i), this.mpdMap, parseTime(i, rawInput)));
       }
 
     }
