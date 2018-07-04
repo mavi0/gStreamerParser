@@ -12,6 +12,7 @@ public class Parser {
   private ArrayList<String> rawInput;
   private ArrayList<Resolution> resolutionChanges;
   private HashMap<String, int[]> mpdMap;
+  private final int RAW_SIZE;
   // private ArrayList<Double> bufferMeanValues;
 
   /**
@@ -37,7 +38,7 @@ public class Parser {
     } catch (Exception e) {
       e.printStackTrace();
     }
-
+    RAW_SIZE = (rawInput.size() - 1);
     //get the start time of the file, and start parsing.
     Double startTime = parseTime(0, rawInput);
     parse(0, startTime);
@@ -142,7 +143,7 @@ public class Parser {
   }
 
   //cheat
-  public static double parseTime(int lineNumber, ArrayList<String> rawInput) {
+  public double parseTime(int lineNumber, ArrayList<String> rawInput) {
     String rawTime = findTimestamp(lineNumber, rawInput);
     String localDateTimeStr = rawTime.replace(" ", "T");
     localDateTimeStr = localDateTimeStr.substring(0, 20);
@@ -187,18 +188,21 @@ public class Parser {
   //   return findTimestamp(lineNumber + 1, rawInput);
   // }
 
-  private static String findTimestamp(int lineNumber, ArrayList<String> rawInput) {
+  private String findTimestamp(int lineNumber, ArrayList<String> rawInput) {
     String rawTime = "";
-    for (; lineNumber < rawInput.size(); lineNumber++)
+    for (; lineNumber < RAW_SIZE; lineNumber++)
       if (rawInput.get(lineNumber).length() > 26) {
         Pattern timeRegex = Pattern.compile(
-            "\\d\\d\\d\\d\\p{Punct}\\d\\d\\p{Punct}\\d\\d\\s\\d\\d\\p{Punct}\\d\\d\\p{Punct}\\d\\d\\p{Punct}\\d\\d\\d\\d\\d\\d\\d\\d\\d\\d");
+            "\\d\\d\\d\\d\\p{Punct}\\d\\d\\p{Punct}\\d\\d\\s\\d\\d\\p{Punct}\\d\\d\\p{Punct}\\d\\d\\p{Punct}\\d\\d\\d\\d\\d\\d");
         rawTime = rawInput.get(lineNumber).substring(0, 26);
         Matcher matcher = timeRegex.matcher(rawTime);
         //try and get a timestamp
         if (matcher.matches())
           return rawTime;
+          // System.out.println(rawTime);
       }
+      System.out.println("THIS: " + lineNumber + " MAX: " + RAW_SIZE);
+      System.out.println("PREV: " + rawInput.get(lineNumber - 1) + " THIS: " + rawInput.get(lineNumber - 1));
       return null;
   }
   // {
