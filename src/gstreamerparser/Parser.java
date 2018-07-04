@@ -161,31 +161,31 @@ public class Parser {
    * @param  rawInput   input arrayList
    * @return            the raw time as a string
    */
-  private static String findTimestampOLD(int lineNumber, ArrayList<String> rawInput) {
-    //skip lines which are too short
-    try {
-      if (rawInput.get(lineNumber).length() < 27) {
-        System.out.println("TOO SMALL " + rawInput.get(lineNumber).length() + " | " + rawInput.get(lineNumber));
-        System.out.println("Line: " + lineNumber);
-        lineNumber = lineNumber + 1;
-        System.out.println("Line1: " + lineNumber);
-        return findTimestamp(lineNumber, rawInput);
-      }
-    } catch (Exception e) {
-      System.out.println(rawInput.get(lineNumber).length() + " | " + rawInput.get(lineNumber));
-    }
-    String rawTime = "";
-    //generate the regex
-    Pattern timeRegex = Pattern.compile(
-        "\\d\\d\\d\\d\\p{Punct}\\d\\d\\p{Punct}\\d\\d\\s\\d\\d\\p{Punct}\\d\\d\\p{Punct}\\d\\d\\p{Punct}\\d\\d\\d\\d\\d\\d\\d\\d\\d\\d");
-    //get the raw timestamp from substring
-    rawTime = rawInput.get(lineNumber).substring(0, 26);
-    Matcher matcher = timeRegex.matcher(rawTime);
-    //try and get a timestamp
-    if (matcher.matches())
-      return rawTime;
-    return findTimestamp(lineNumber + 1, rawInput);
-  }
+  // private static String findTimestampOLD(int lineNumber, ArrayList<String> rawInput) {
+  //   //skip lines which are too short
+  //   try {
+  //     if (rawInput.get(lineNumber).length() < 27) {
+  //       System.out.println("TOO SMALL " + rawInput.get(lineNumber).length() + " | " + rawInput.get(lineNumber));
+  //       System.out.println("Line: " + lineNumber);
+  //       lineNumber = lineNumber + 1;
+  //       System.out.println("Line1: " + lineNumber);
+  //       return findTimestamp(lineNumber, rawInput);
+  //     }
+  //   } catch (Exception e) {
+  //     System.out.println(rawInput.get(lineNumber).length() + " | " + rawInput.get(lineNumber));
+  //   }
+  //   String rawTime = "";
+  //   //generate the regex
+  //   Pattern timeRegex = Pattern.compile(
+  //       "\\d\\d\\d\\d\\p{Punct}\\d\\d\\p{Punct}\\d\\d\\s\\d\\d\\p{Punct}\\d\\d\\p{Punct}\\d\\d\\p{Punct}\\d\\d\\d\\d\\d\\d\\d\\d\\d\\d");
+  //   //get the raw timestamp from substring
+  //   rawTime = rawInput.get(lineNumber).substring(0, 26);
+  //   Matcher matcher = timeRegex.matcher(rawTime);
+  //   //try and get a timestamp
+  //   if (matcher.matches())
+  //     return rawTime;
+  //   return findTimestamp(lineNumber + 1, rawInput);
+  // }
 
   private static String findTimestamp(int lineNumber, ArrayList<String> rawInput) {
     String rawTime = "";
@@ -199,7 +199,7 @@ public class Parser {
         if (matcher.matches())
           return rawTime;
       }
-      return NULL;
+      return null;
   }
   // {
   //   System.out.println("TOO SMALL " + rawInput.get(lineNumber).length() + " | " + rawInput.get(lineNumber));
