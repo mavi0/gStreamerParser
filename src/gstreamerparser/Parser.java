@@ -6,6 +6,7 @@ import java.time.*;
 import com.google.gson.Gson;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.regex.*;
 
 public class Parser {
   private ArrayList<String> rawInput;
@@ -168,7 +169,7 @@ public class Parser {
     Matcher matcher = timeRegex.matcher(rawTime);
     if (matcher.matches())
       return rawTime;
-    findTimestamp(lineNumber + 1, rawInput);
+    return findTimestamp(lineNumber + 1, rawInput);
   }
 
   private class Output {
