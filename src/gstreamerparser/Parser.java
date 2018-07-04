@@ -32,7 +32,7 @@ public class Parser {
       String st;
       while ((st = br.readLine()) != null) {
         rawInput.add(st);
-        // System.out.println(st);
+        System.out.println(st);
       }
     } catch (Exception e) {
       e.printStackTrace();
@@ -164,8 +164,18 @@ public class Parser {
    */
   private static String findTimestamp(int lineNumber, ArrayList<String> rawInput) {
     //skip lines which are too short
-    if (rawInput.get(lineNumber).length() < 27)
-      return findTimestamp(lineNumber + 1, rawInput);
+    try {
+      if (rawInput.get(lineNumber).length() < 27)
+      {
+        System.out.println("TOO SMALL " + rawInput.get(lineNumber).length() + " | " + rawInput.get(lineNumber));
+        System.out.println("Line: " + lineNumber);
+        lineNumber = lineNumber + 1;
+        System.out.println( "Line1: " + lineNumber);
+        return findTimestamp(lineNumber, rawInput);
+      }
+    } catch (Exception e) {
+      System.out.println(rawInput.get(lineNumber).length() + " | " + rawInput.get(lineNumber));
+    }
     String rawTime = "";
     //generate the regex
     Pattern timeRegex = Pattern.compile("\\d\\d\\d\\d\\p{Punct}\\d\\d\\p{Punct}\\d\\d\\s\\d\\d\\p{Punct}\\d\\d\\p{Punct}\\d\\d\\p{Punct}\\d\\d\\d\\d\\d\\d\\d\\d\\d\\d");
