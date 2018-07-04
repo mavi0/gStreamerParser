@@ -33,7 +33,7 @@ public class Parser {
       String st;
       while ((st = br.readLine()) != null) {
         rawInput.add(st);
-        System.out.println(st);
+        // System.out.println(st);
       }
     } catch (Exception e) {
       e.printStackTrace();
@@ -64,26 +64,29 @@ public class Parser {
     boolean prerolled = false;
 
     //iterate over each line in the raw log file, until PREROLLED is reached. Return the line number of the next line.
-    for (int i = prerolledLine(startLine); i < rawInput.size(); i++) {
+    for (int i = prerolledLine(startLine); i < RAW_SIZE; i++) {
       // System.out.println(i);
 
       if (rawInput.get(i).contains("PAUSED")) {
+        System.out.println("PAUSED");
         startTime = parseTime(i, rawInput);
         //get releveant resolution object, set its endTime.
-        resolutionTimes = resolutionChanges.get(resolutionChanges.size() - 1).setEndTime(startTime, resolutionTimes);
+        resolutionTimes = resolutionChanges.get(resolutionChanges.size()).setEndTime(startTime, resolutionTimes);
         // System.out.printf("Res Time PAUSED %f\n", resolutionChanges.get(resolutionChanges.size() - 1).getDuration());
       }
 
       if (rawInput.get(i).contains("PLAYING")) {
+        System.out.println("PLAY");
         double buffer = parseTime(i, rawInput) - startTime;
         bufferingTime += buffer;
         bufferCount++;
         // bufferMeanValues.add(buffer);
       }
 
-      if (rawInput.get(i).contains("/GstPlayBin:playbin0./GstInputSelector:inputselector0.GstPad:src:")) {
+      if (rawInput.get(i).contains("/GstPlayBin:playbin0/GstInputSelector:inputselector0.GstPad:src:")) {
+        System.out.println("RES CHANGE");
         if (resolutionChanges.size() > 0)
-          resolutionTimes = resolutionChanges.get(resolutionChanges.size() - 1).setEndTime(parseTime(i, rawInput),
+          resolutionTimes = resolutionChanges.get(resolutionChanges.size()).setEndTime(parseTime(i, rawInput),
               resolutionTimes);
         resolutionChanges.add(new Resolution(rawInput.get(i), this.mpdMap, parseTime(i, rawInput)));
       }

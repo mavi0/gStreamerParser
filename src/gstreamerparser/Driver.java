@@ -10,7 +10,7 @@ public class Driver
 
   public static void main(String[] args)
   {
-    System.out.println(args);
+    // System.out.println(args);
     //check args are there
     if ( args.length < 2 || args.length > 2)
     {

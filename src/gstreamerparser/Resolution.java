@@ -33,7 +33,7 @@ public class Resolution {
       this.endTime = endTime;
       this.mutable = false;
       resolutionChanges = addEvent(resolutionChanges);
-      // System.out.println(" Width: " + width + " Height: " + height);
+      System.out.println(" Width: " + width + " Height: " + height);
 
     }
     return resolutionChanges;
