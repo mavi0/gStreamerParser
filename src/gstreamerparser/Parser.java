@@ -83,11 +83,18 @@ public class Parser {
         // bufferMeanValues.add(buffer);
       }
 
+      //new resolution change. If a previous event exists, set its end time. Make a new resolution event and andd it to the list
       if (rawInput.get(i).contains("/GstPlayBin:playbin0/GstInputSelector:inputselector0.GstPad:src:")) {
         System.out.println("RES CHANGE");
         if (resolutionChanges.size() > 0)
-          resolutionTimes = resolutionChanges.get(resolutionChanges.size()).setEndTime(parseTime(i, rawInput),
-              resolutionTimes);
+        {
+          System.out.println(resolutionChanges.size());
+          resolutionTimes = resolutionChanges.get(resolutionChanges.size() - 1).setEndTime(parseTime(i, rawInput),  resolutionTimes);
+          // System.out.println(resolutionChanges.size().setEndTime(parseTime(i, rawInput), resolutionTimes));
+
+        }
+
+        //new resolution Parsed
         resolutionChanges.add(new Resolution(rawInput.get(i), this.mpdMap, parseTime(i, rawInput)));
       }
 

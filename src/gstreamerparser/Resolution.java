@@ -57,7 +57,8 @@ public class Resolution {
     Iterator it = mpdMap.entrySet().iterator();
     while (it.hasNext()) {
       Map.Entry pair = (Map.Entry) it.next();
-      System.out.println(pair.getKey() + " = " + pair.getValue());
+      int[] val = (int[])pair.getValue();
+      System.out.println(pair.getKey() + " = " + val[0]);
       it.remove(); // avoids a ConcurrentModificationException
     }
     return true;
@@ -72,26 +73,39 @@ public class Resolution {
   }
 
   private double[] addEvent(double[] resolutionChanges) {
-    switch (height) {
-    case 180:
-      resolutionChanges[0] += getDuration();
-    case 270:
-      resolutionChanges[1] += getDuration();
-    case 360:
-      resolutionChanges[2] += getDuration();
-    case 432:
-      resolutionChanges[3] += getDuration();
-    case 576:
-      resolutionChanges[4] += getDuration();
-    case 720:
-      resolutionChanges[5] += getDuration();
-    case 1080:
-      resolutionChanges[6] += getDuration();
-    case 2160:
-      resolutionChanges[7] += getDuration();
-    default:
-      break;
+
+    Iterator it = mpdMap.entrySet().iterator();
+    int i = 0;
+    while (it.hasNext()) {
+      Map.Entry pair = (Map.Entry) it.next();
+      // System.out.println(pair.getKey() + " = " + pair.getValue());
+      int[] val = (int[])pair.getValue();
+      if (this.width == val[0])
+        resolutionChanges[i] += getDuration();
+        System.out.println(i);
+      it.remove(); // avoids a ConcurrentModificationException
     }
+    //
+    // switch (height) {
+    // case 180:
+    //   resolutionChanges[0] += getDuration();
+    // case 270:
+    //   resolutionChanges[1] += getDuration();
+    // case 360:
+    //   resolutionChanges[2] += getDuration();
+    // case 432:
+    //   resolutionChanges[3] += getDuration();
+    // case 576:
+    //   resolutionChanges[4] += getDuration();
+    // case 720:
+    //   resolutionChanges[5] += getDuration();
+    // case 1080:
+    //   resolutionChanges[6] += getDuration();
+    // case 2160:
+    //   resolutionChanges[7] += getDuration();
+    // default:
+    //   break;
+    // }
     return resolutionChanges;
   }
 
