@@ -11,7 +11,7 @@ import java.util.regex.*;
 public class Parser {
   private ArrayList<String> rawInput;
   private ArrayList<Resolution> resolutionChanges;
-  private HashMap<String, int[]> mpdMap;
+  private final HashMap<String, int[]> MPD;
   private final int RAW_SIZE;
   // private ArrayList<Double> bufferMeanValues;
 
@@ -23,7 +23,7 @@ public class Parser {
   public Parser(String filename, HashMap<String, int[]> mpdMap) {
     rawInput = new ArrayList<String>();
     resolutionChanges = new ArrayList<Resolution>();
-    this.mpdMap = mpdMap;
+    this.MPD = mpdMap;
 
     //read the file line by line into ArrayList
     try {
@@ -59,19 +59,20 @@ public class Parser {
     double bufferingTime = 0L;
     double playtime = 0L;
     // double[] resolutionTimes = new double[8]; // 0 = 108p, 1 = 270p, 2 = 360p, 3 = 432p, 4 = 576p, 5 = 720p, 6 = 1080, 7 = 2160p
-    double[] resolutionTimes = new double[this.mpdMap.size() + 1];
+    double[] resolutionTimes = new double[this.MPD.size() + 1];
     int bufferCount = 0;
     boolean prerolled = false;
 
     //iterate over each line in the raw log file, until PREROLLED is reached. Return the line number of the next line.
     for (int i = prerolledLine(startLine); i < RAW_SIZE; i++) {
       // System.out.println(i);
+      // System.out.println("THEMPD: " + MPD.size());
 
       if (rawInput.get(i).contains("PAUSED")) {
         System.out.println("PAUSED");
         startTime = parseTime(i, rawInput);
         //get releveant resolution object, set its endTime.
-        resolutionTimes = resolutionChanges.get(resolutionChanges.size()).setEndTime(startTime, resolutionTimes);
+        resolutionTimes = resolutionChanges.get(resolutionChanges.size() - 1).setEndTime(startTime, resolutionTimes);
         // System.out.printf("Res Time PAUSED %f\n", resolutionChanges.get(resolutionChanges.size() - 1).getDuration());
       }
 
@@ -95,7 +96,8 @@ public class Parser {
         }
 
         //new resolution Parsed
-        resolutionChanges.add(new Resolution(rawInput.get(i), this.mpdMap, parseTime(i, rawInput)));
+
+        resolutionChanges.add(new Resolution(rawInput.get(i), new HashMap<String, int[]>(MPD), parseTime(i, rawInput)));
       }
 
     }
@@ -116,7 +118,7 @@ public class Parser {
     System.out.printf("Playtime (RES) = %f\n", playtime);
     System.out.printf("Mean time between buffering - %f\n", playtime / bufferCount);
     System.out.println("Number of change of resolution events = " + resolutionChanges.size());
-    System.out.printf("%f", resolutionTimes[7]);
+    System.out.println("RES TIMES" + Arrays.toString(resolutionTimes));
 
     Output out = new Output();
     out.bufferingEventsCount = bufferCount;

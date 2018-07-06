@@ -8,10 +8,11 @@ public class Resolution {
   private double startTime = 0;
   private double endTime = 0;
   private boolean mutable = true;
-  private HashMap<String, int[]> mpdMap;
+  private final HashMap<String, int[]> MPD;
 
   public Resolution(String rawLine, HashMap<String, int[]> mpdMap, double startTime) {
-    this.mpdMap = mpdMap;
+    this.MPD = mpdMap;
+    System.out.println("MPD: " + this.MPD.size());
     this.height = Integer.parseInt(
         rawLine.substring(rawLine.indexOf("height=(int)") + 12, rawLine.indexOf(", interlace-mode=(string)")));
     this.width = Integer
@@ -54,13 +55,15 @@ public class Resolution {
   }
 
   private boolean searchMap(int size, int arrayPos) {
-    Iterator it = mpdMap.entrySet().iterator();
+    HashMap<String, int[]> mMap = new HashMap<String, int[]>(MPD);
+    Iterator it = mMap.entrySet().iterator();
     while (it.hasNext()) {
       Map.Entry pair = (Map.Entry) it.next();
       int[] val = (int[])pair.getValue();
       System.out.println(pair.getKey() + " = " + val[0]);
       it.remove(); // avoids a ConcurrentModificationException
     }
+    System.out.println("MAP " + MPD.size());
     return true;
   }
 
@@ -73,16 +76,20 @@ public class Resolution {
   }
 
   private double[] addEvent(double[] resolutionChanges) {
-
-    Iterator it = mpdMap.entrySet().iterator();
+    HashMap<String, int[]> mMap = new HashMap<String, int[]>(MPD);
+    Iterator it = mMap.entrySet().iterator();
     int i = 0;
     while (it.hasNext()) {
       Map.Entry pair = (Map.Entry) it.next();
       // System.out.println(pair.getKey() + " = " + pair.getValue());
       int[] val = (int[])pair.getValue();
       if (this.width == val[0])
+      {
         resolutionChanges[i] += getDuration();
-        System.out.println(i);
+        System.out.println("DURATION" + getDuration() + "  " + i);
+        System.out.println("THIS WIDTH " + this.width + "TEST WIDTH" + val[0]);
+      }
+      i++;
       it.remove(); // avoids a ConcurrentModificationException
     }
     //
