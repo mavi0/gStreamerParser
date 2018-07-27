@@ -59,7 +59,7 @@ public class Parser {
     double bufferingTime = 0L;
     double playtime = 0L;
     // double[] resolutionTimes = new double[8]; // 0 = 108p, 1 = 270p, 2 = 360p, 3 = 432p, 4 = 576p, 5 = 720p, 6 = 1080, 7 = 2160p
-    double[] resolutionTimes = new double[this.MPD.size() + 1];
+    double[] resolutionTimes = new double[this.MPD.size()];
     int bufferCount = 0;
     boolean prerolled = false;
 
