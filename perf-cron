@@ -1,0 +1,1 @@
+@hourly cd /dash && bash test.sh

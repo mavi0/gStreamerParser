@@ -134,13 +134,13 @@ public class Parser {
 
     try {
       //archive the result
-      File file = new File("log/" + timestamp + ".json");
+      File file = new File("/log/" + timestamp + ".json");
       FileWriter fileWriter = new FileWriter(file);
       fileWriter.write(gson.toJson(out));
       fileWriter.flush();
       fileWriter.close();
       //overwrite file to save
-      File fileB = new File("log.json");
+      File fileB = new File("/share/log.json");
       FileWriter fileWriterB = new FileWriter(fileB);
       fileWriterB.write(gson.toJson(out));
       fileWriterB.flush();
