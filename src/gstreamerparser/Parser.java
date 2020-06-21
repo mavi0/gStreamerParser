@@ -128,6 +128,7 @@ public class Parser {
     out.meanTimeBetweenBuffering = (playtime / bufferCount);
     out.resolutionChangeCount = resolutionChanges.size();
     out.resolutionTimes = resolutionTimes;
+    out.client_id = System.getenv("CLIENT_ID");
 
     Gson gson = new Gson();
     Timestamp timestamp = new Timestamp(System.currentTimeMillis());
@@ -140,7 +141,7 @@ public class Parser {
       fileWriter.flush();
       fileWriter.close();
       //overwrite file to save
-      File fileB = new File("/share/log.json");
+      File fileB = new File("/share/qoe.json");
       FileWriter fileWriterB = new FileWriter(fileB);
       fileWriterB.write(gson.toJson(out));
       fileWriterB.flush();
@@ -236,6 +237,6 @@ public class Parser {
     public double meanTimeBetweenBuffering;
     public int resolutionChangeCount;
     public double[] resolutionTimes;
-
+    public String client_id;
   }
 }
